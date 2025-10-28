@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "181834835635",
+    "project_id": "seguridadapp-aac73",
+    "storage_bucket": "seguridadapp-aac73.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:181834835635:android:2436a5774839f7c961f2c6",
+        "android_client_info": {
+          "package_name": "com.example.seguridadapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyANCCo0wzfZmUN2zCNplfXkOBp1-O_2w10"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
