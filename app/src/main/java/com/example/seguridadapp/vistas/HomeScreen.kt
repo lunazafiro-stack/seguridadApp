@@ -1,44 +1,42 @@
 package com.example.seguridadapp.vistas
 
-import android.widget.Toast // Mensajes emergentes al usuario
-
-import androidx.compose.foundation.background // Fondo de pantalla
-import androidx.compose.foundation.layout.* // Column, Row, Spacer, Box, etc.
-import androidx.compose.foundation.shape.RoundedCornerShape // Bordes redondeados en botones
-import androidx.compose.material.icons.Icons // Íconos predeterminados
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Home // Ícono de inicio
-import androidx.compose.material.icons.filled.Menu // Ícono de menú
-import androidx.compose.material3.* // Botones, textos, tema visual
-
-import androidx.compose.runtime.* // Estado reactivo (remember, mutableStateOf)
-import androidx.compose.runtime.saveable.rememberSaveable // Guarda estado al rotar pantalla
-
-import androidx.compose.ui.Alignment // Alineación dentro de Column, Row, Box
-import androidx.compose.ui.Modifier // Modificadores visuales
-import androidx.compose.ui.graphics.Color // Colores personalizados
-import androidx.compose.ui.platform.LocalContext // Accede al contexto actual
-import androidx.compose.ui.text.font.FontWeight // Negrita en textos
-import androidx.compose.ui.text.style.TextAlign // Alineación de texto
-import androidx.compose.ui.unit.dp // Medidas en dp (density-independent pixels)
-
-import androidx.navigation.NavController // Navegación entre pantallas
+import android.widget.Toast
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.google.firebase.auth.FirebaseAuth
 
+
+import com.example.seguridadapp.network.RetrofitClient
+import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(navController: NavController, auth: FirebaseAuth) {
     val userEmail = auth.currentUser?.email
     val context = LocalContext.current
+
+
     var lastUID by rememberSaveable { mutableStateOf("% DA C7 AF") }
     var doorClosed by rememberSaveable { mutableStateOf(true) }
-    var expanded by remember { mutableStateOf(false) } //hamburguesa
 
+
+    val coroutineScope = rememberCoroutineScope()
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFE0F2FF)) // fondo celeste claro
+            .background(Color(0xFFE0F2FF))
             .padding(24.dp),
         contentAlignment = Alignment.TopCenter
     ) {
@@ -46,7 +44,7 @@ fun HomeScreen(navController: NavController, auth: FirebaseAuth) {
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Saludo
+
             Text(
                 text = "Hola ${userEmail ?: "Usuario"}!",
                 style = MaterialTheme.typography.headlineMedium,
@@ -58,9 +56,8 @@ fun HomeScreen(navController: NavController, auth: FirebaseAuth) {
 
             Spacer(Modifier.height(32.dp))
 
-            // Último UID leído
             Button(
-                onClick = { /* Acción si se desea */ },
+                onClick = { /* Acción futura para actualizar UID */ },
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2563EB)),
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier
@@ -72,28 +69,44 @@ fun HomeScreen(navController: NavController, auth: FirebaseAuth) {
 
             Spacer(Modifier.height(16.dp))
 
-            // Estado de la puerta
             Button(
-                onClick = { /* Acción si se desea  faltaaa */ },
-                colors = ButtonDefaults.buttonColors(containerColor = Color.Gray),
+                onClick = { },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = if (doorClosed) Color.Gray else Color(0xFF10B981) // Gris o Verde
+                ),
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp)
             ) {
                 Text(
-                    text = if (doorClosed) "Puerta Cerrada" else "Puerta Abierta",
+                    text = if (doorClosed) "Estado: Puerta Cerrada" else "Estado: Puerta Abierta",
                     color = Color.White
                 )
             }
 
             Spacer(Modifier.height(16.dp))
 
-            // Botón para abrir puerta
+
             Button(
                 onClick = {
-                    doorClosed = false
-                    Toast.makeText(context, "Puerta abierta", Toast.LENGTH_SHORT).show()
+
+                    coroutineScope.launch {
+                        try {
+
+                            val response = RetrofitClient.api.toggleDoor()
+
+
+                            Toast.makeText(context, "ESP32: ${response.mensaje}", Toast.LENGTH_SHORT).show()
+
+
+                            doorClosed = !doorClosed
+
+                        } catch (e: Exception) {
+
+                            Toast.makeText(context, "Error de conexión: ${e.message}", Toast.LENGTH_LONG).show()
+                        }
+                    }
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2563EB)),
                 shape = RoundedCornerShape(12.dp),
@@ -101,7 +114,24 @@ fun HomeScreen(navController: NavController, auth: FirebaseAuth) {
                     .fillMaxWidth()
                     .height(56.dp)
             ) {
-                Text("Abrir Puerta", color = Color.White, fontWeight = FontWeight.Bold)
+                Text("Abrir / Cerrar Puerta", color = Color.White, fontWeight = FontWeight.Bold)
+            }
+
+            Spacer(Modifier.height(16.dp))
+
+
+            Button(
+                onClick = {
+
+                    navController.navigate("historial")
+                },
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1E3A8A)), // Azul más oscuro
+                shape = RoundedCornerShape(12.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp)
+            ) {
+                Text("Ver Historial de Accesos", color = Color.White)
             }
         }
     }

@@ -62,5 +62,9 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
-
+// Retrofit para peticiones HTTP
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    // Corrutinas para no bloquear la pantalla
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 }

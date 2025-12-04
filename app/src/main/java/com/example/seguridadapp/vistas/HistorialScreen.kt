@@ -1,16 +1,16 @@
 package com.example.seguridadapp.vistas
 
-// Firebase
+
 import com.google.firebase.auth.FirebaseAuth
 
 // Jetpack Compose UI
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState // Para poder hacer scroll
+import androidx.compose.foundation.verticalScroll // Para habilitar el scroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Security
 import androidx.compose.material3.*
 
 // Estado y contexto
@@ -28,24 +28,35 @@ import androidx.navigation.NavController
 
 // Android
 import android.widget.Toast
-import androidx.compose.material.icons.filled.Security
+
+// IMPORTANTE: Asegúrate de importar tu cliente de red
+import com.example.seguridadapp.network.RetrofitClient
 
 @Composable
-//historial de accesos
 fun HistorialScreen(navController: NavController, auth: FirebaseAuth) {
-    // Obtiene el contexto actual para mostrar mensajes (Toast)
     val context = LocalContext.current
-    // Estado para controlar si el menú desplegable está abierto
-    var expanded by remember { mutableStateOf(false) } // menú hamburguesa
-    // Lista simulada de accesos con fecha, hora y estado (true = autorizado)
-    val historial = listOf(
-        Triple("10-10-2025", "12:20", true),
-        Triple("10-10-2025", "22:30", true),
-        Triple("09-10-2025", "10:11", false),
-        Triple("09-10-2025", "20:30", true)
-    )
 
-        //contenedor principal
+
+    var historialLista by remember { mutableStateOf<List<String>>(emptyList()) }
+
+
+    var cargando by remember { mutableStateOf(true) }
+
+
+    LaunchedEffect(Unit) {
+        try {
+
+            historialLista = RetrofitClient.api.getHistory()
+            cargando = false
+        } catch (e: Exception) {
+            cargando = false
+            Toast.makeText(context, "No se pudo conectar al ESP32", Toast.LENGTH_SHORT).show()
+
+            historialLista = listOf("Error de conexión: Verifique WiFi")
+        }
+    }
+
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -53,12 +64,14 @@ fun HistorialScreen(navController: NavController, auth: FirebaseAuth) {
             .padding(24.dp),
         contentAlignment = Alignment.TopCenter
     ) {
-        // Columna que organiza los elementos verticalmente
+
         Column(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Título de la pantalla
+
             Text(
                 text = "Historial de Accesos",
                 style = MaterialTheme.typography.headlineMedium,
@@ -68,47 +81,73 @@ fun HistorialScreen(navController: NavController, auth: FirebaseAuth) {
                 modifier = Modifier.fillMaxWidth()
             )
 
-            Spacer(Modifier.height(16.dp))// Espacio entre título y filtro
+            Spacer(Modifier.height(16.dp))
 
-            // escudo
+
             Icon(
                 imageVector = Icons.Default.Security,
                 contentDescription = "Ícono de seguridad",
-                tint = Color(0xFF2563EB), // mismo azul del botón
+                tint = Color(0xFF2563EB),
                 modifier = Modifier
                     .size(96.dp)
                     .padding(top = 16.dp)
             )
 
-            // Botón de filtro (simulado)
+
             Button(
-                onClick = { Toast.makeText(context, "Filtro aún no implementado", Toast.LENGTH_SHORT).show() },
+                onClick = {
+
+                    cargando = true
+
+                    Toast.makeText(context, "Recargando al salir y entrar...", Toast.LENGTH_SHORT).show()
+                },
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2563EB)),
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Filtrar: Todas", color = Color.White)
+                Text("Estado: ${if (cargando) "Cargando..." else "Actualizado"}", color = Color.White)
             }
 
             Spacer(Modifier.height(24.dp))
 
-            // Recorre la lista de historial y muestra cada evento como botón
-            historial.forEach { (fecha, hora, autorizado) ->
-                val color = if (autorizado) Color(0xFF10B981) else Color(0xFFEF4444)
-                val estado = if (autorizado) "Autorizado" else "No Autorizado"
+            if (historialLista.isEmpty() && !cargando) {
+                Text(
+                    text = "No hay registros recientes",
+                    color = Color.Gray,
+                    textAlign = TextAlign.Center
+                )
+            } else {
 
-                Button(
-                    onClick = { /* Acción si se desea */ },
-                    colors = ButtonDefaults.buttonColors(containerColor = color),
-                    shape = RoundedCornerShape(12.dp),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp)
-                        .padding(vertical = 4.dp)
-                ) {
-                    Text("$fecha, $hora – $estado", color = Color.White)
+                historialLista.forEach { eventoTexto ->
+
+
+                    val colorBoton = when {
+                        eventoTexto.contains("Autorizado", ignoreCase = true) -> Color(0xFF10B981) // Verde
+                        eventoTexto.contains("Denegado", ignoreCase = true) -> Color(0xFFEF4444)   // Rojo
+                        eventoTexto.contains("Fallido", ignoreCase = true) -> Color(0xFFEF4444)    // Rojo
+                        else -> Color(0xFF2563EB)
+                    }
+
+                    Button(
+                        onClick = { /* Solo informativo */ },
+                        colors = ButtonDefaults.buttonColors(containerColor = colorBoton),
+                        shape = RoundedCornerShape(12.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(56.dp)
+                            .padding(vertical = 4.dp)
+                    ) {
+
+                        Text(
+                            text = eventoTexto,
+                            color = Color.White,
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
                 }
             }
+
+            Spacer(Modifier.height(40.dp))
         }
     }
 }
