@@ -38,7 +38,7 @@ fun LoginScreen(navController: NavController, auth: FirebaseAuth) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFE0F2FF)) // azul muy claro fondo pantalla
+            .background(Color((0xFF0A1F2D))) // azul petróleo fondo pantalla
             .padding(24.dp),
         contentAlignment = Alignment.Center
     ) {
@@ -51,7 +51,7 @@ fun LoginScreen(navController: NavController, auth: FirebaseAuth) {
                 text = "Bienvenido tu App de Seguridad",
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E3A8A), // azul oscuro
+                color = Color((0xFFC084FC)), // morado claro
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -62,7 +62,7 @@ fun LoginScreen(navController: NavController, auth: FirebaseAuth) {
             Icon(
                 imageVector = Icons.Default.Security,
                 contentDescription = "Ícono de seguridad",
-                tint = Color(0xFF2563EB), // mismo azul del botón
+                tint = Color(0xFFA855F7), // morado medio
                 modifier = Modifier
                     .size(96.dp)
                     .padding(top = 16.dp)
@@ -72,13 +72,13 @@ fun LoginScreen(navController: NavController, auth: FirebaseAuth) {
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
-                label = { Text("Correo electrónico") },
+                label = { Text("Correo electrónico")},
                 leadingIcon = { Icon(Icons.Default.Email, contentDescription = null) },
                 shape = RoundedCornerShape(12.dp),
                 colors = TextFieldDefaults.colors(
-                    focusedIndicatorColor = Color(0xFF2563EB),
+                    focusedIndicatorColor = Color(0xFF9333EA),
                     unfocusedIndicatorColor = Color.Gray,
-                    focusedLabelColor = Color(0xFF2563EB),
+                    focusedLabelColor = Color(0xFF9333EA),
                     unfocusedLabelColor = Color.Gray
                 )
             )
@@ -107,7 +107,7 @@ fun LoginScreen(navController: NavController, auth: FirebaseAuth) {
             Button(
                 onClick =
                     { validarCredencial(email, password, auth, context, navController)},
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2563EB)),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF7C3AED)),
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier
                     .height(56.dp) // altura estándar para botones

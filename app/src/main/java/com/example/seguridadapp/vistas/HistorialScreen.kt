@@ -36,76 +36,70 @@ import com.example.seguridadapp.network.RetrofitClient
 fun HistorialScreen(navController: NavController, auth: FirebaseAuth) {
     val context = LocalContext.current
 
-
     var historialLista by remember { mutableStateOf<List<String>>(emptyList()) }
-
-
     var cargando by remember { mutableStateOf(true) }
-
 
     LaunchedEffect(Unit) {
         try {
-
             historialLista = RetrofitClient.api.getHistory()
             cargando = false
         } catch (e: Exception) {
             cargando = false
             Toast.makeText(context, "No se pudo conectar al ESP32", Toast.LENGTH_SHORT).show()
-
             historialLista = listOf("Error de conexión: Verifique WiFi")
         }
     }
 
-
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFE0F2FF))
+            .background(Color(0xFF0A1F2D)) // fondo azul petróleo
             .padding(24.dp),
         contentAlignment = Alignment.TopCenter
     ) {
-
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
+            // Encabezado
             Text(
                 text = "Historial de Accesos",
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E3A8A),
+                color = Color(0xFFC084FC), // morado claro
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
 
             Spacer(Modifier.height(16.dp))
 
-
+            // Ícono escudo
             Icon(
                 imageVector = Icons.Default.Security,
                 contentDescription = "Ícono de seguridad",
-                tint = Color(0xFF2563EB),
-                modifier = Modifier
-                    .size(96.dp)
-                    .padding(top = 16.dp)
+                tint = Color(0xFFA855F7), // morado medio
+                modifier = Modifier.size(96.dp)
             )
 
+            Spacer(Modifier.height(16.dp))
 
+            // Botón estado
             Button(
                 onClick = {
-
                     cargando = true
-
                     Toast.makeText(context, "Recargando al salir y entrar...", Toast.LENGTH_SHORT).show()
                 },
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2563EB)),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF7C3AED)), // morado intenso
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Estado: ${if (cargando) "Cargando..." else "Actualizado"}", color = Color.White)
+                Text(
+                    "Estado: ${if (cargando) "Cargando..." else "Actualizado"}",
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold
+                )
             }
 
             Spacer(Modifier.height(24.dp))
@@ -113,19 +107,16 @@ fun HistorialScreen(navController: NavController, auth: FirebaseAuth) {
             if (historialLista.isEmpty() && !cargando) {
                 Text(
                     text = "No hay registros recientes",
-                    color = Color.Gray,
+                    color = Color(0xFFCBD5E1), // gris claro
                     textAlign = TextAlign.Center
                 )
             } else {
-
                 historialLista.forEach { eventoTexto ->
-
-
                     val colorBoton = when {
-                        eventoTexto.contains("Autorizado", ignoreCase = true) -> Color(0xFF10B981) // Verde
-                        eventoTexto.contains("Denegado", ignoreCase = true) -> Color(0xFFEF4444)   // Rojo
-                        eventoTexto.contains("Fallido", ignoreCase = true) -> Color(0xFFEF4444)    // Rojo
-                        else -> Color(0xFF2563EB)
+                        eventoTexto.contains("Autorizado", ignoreCase = true) -> Color(0xFF10B981) // verde
+                        eventoTexto.contains("Denegado", ignoreCase = true) -> Color(0xFFEF4444) // rojo
+                        eventoTexto.contains("Fallido", ignoreCase = true) -> Color(0xFFEF4444) // rojo
+                        else -> Color(0xFFA855F7) // morado medio por defecto
                     }
 
                     Button(
@@ -137,11 +128,11 @@ fun HistorialScreen(navController: NavController, auth: FirebaseAuth) {
                             .height(56.dp)
                             .padding(vertical = 4.dp)
                     ) {
-
                         Text(
                             text = eventoTexto,
                             color = Color.White,
-                            style = MaterialTheme.typography.bodyMedium
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.SemiBold
                         )
                     }
                 }

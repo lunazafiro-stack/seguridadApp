@@ -26,17 +26,15 @@ fun HomeScreen(navController: NavController, auth: FirebaseAuth) {
     val userEmail = auth.currentUser?.email
     val context = LocalContext.current
 
-
     var lastUID by rememberSaveable { mutableStateOf("% DA C7 AF") }
     var doorClosed by rememberSaveable { mutableStateOf(true) }
-
 
     val coroutineScope = rememberCoroutineScope()
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFE0F2FF))
+            .background(Color(0xFF0A1F2D)) // fondo azul petróleo
             .padding(24.dp),
         contentAlignment = Alignment.TopCenter
     ) {
@@ -44,21 +42,22 @@ fun HomeScreen(navController: NavController, auth: FirebaseAuth) {
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
+            // Encabezado
             Text(
                 text = "Hola ${userEmail ?: "Usuario"}!",
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E3A8A),
+                color = Color(0xFFC084FC), // morado claro
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
 
             Spacer(Modifier.height(32.dp))
 
+            // Último UID
             Button(
                 onClick = { /* Acción futura para actualizar UID */ },
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2563EB)),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF7C3AED)), // morado intenso
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -69,10 +68,11 @@ fun HomeScreen(navController: NavController, auth: FirebaseAuth) {
 
             Spacer(Modifier.height(16.dp))
 
+            // Estado de la puerta
             Button(
                 onClick = { },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = if (doorClosed) Color.Gray else Color(0xFF10B981) // Gris o Verde
+                    containerColor = if (doorClosed) Color(0xFF9333EA) else Color(0xFF10B981) // morado suave o verde
                 ),
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier
@@ -81,34 +81,27 @@ fun HomeScreen(navController: NavController, auth: FirebaseAuth) {
             ) {
                 Text(
                     text = if (doorClosed) "Estado: Puerta Cerrada" else "Estado: Puerta Abierta",
-                    color = Color.White
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold
                 )
             }
 
             Spacer(Modifier.height(16.dp))
 
-
+            // Botón abrir/cerrar puerta
             Button(
                 onClick = {
-
                     coroutineScope.launch {
                         try {
-
                             val response = RetrofitClient.api.toggleDoor()
-
-
                             Toast.makeText(context, "ESP32: ${response.mensaje}", Toast.LENGTH_SHORT).show()
-
-
                             doorClosed = !doorClosed
-
                         } catch (e: Exception) {
-
                             Toast.makeText(context, "Error de conexión: ${e.message}", Toast.LENGTH_LONG).show()
                         }
                     }
                 },
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2563EB)),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF7C3AED)), // morado intenso
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -119,19 +112,16 @@ fun HomeScreen(navController: NavController, auth: FirebaseAuth) {
 
             Spacer(Modifier.height(16.dp))
 
-
+            // Botón historial
             Button(
-                onClick = {
-
-                    navController.navigate("historial")
-                },
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1E3A8A)), // Azul más oscuro
+                onClick = { navController.navigate("historial") },
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFA855F7)), // morado medio
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp)
             ) {
-                Text("Ver Historial de Accesos", color = Color.White)
+                Text("Ver Historial de Accesos", color = Color.White, fontWeight = FontWeight.Bold)
             }
         }
     }

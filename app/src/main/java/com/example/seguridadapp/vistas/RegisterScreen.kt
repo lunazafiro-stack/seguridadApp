@@ -63,7 +63,7 @@ fun RegisterScreen(navController: NavController, auth: FirebaseAuth) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFE0F2FF)) // azul muy claro fondo pantalla
+            .background(Color(0xFF0A1F2D)) // fondo azul petróleo fondo pantalla
             .padding(24.dp),
         contentAlignment = Alignment.Center
     ) {
@@ -76,7 +76,7 @@ fun RegisterScreen(navController: NavController, auth: FirebaseAuth) {
                 text = "Crear cuenta",
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1E3A8A), // ← azul oscuro
+                color = Color(0xFFC084FC), // ←  morado claro
                 textAlign = TextAlign.Center
             )
 
@@ -86,7 +86,7 @@ fun RegisterScreen(navController: NavController, auth: FirebaseAuth) {
             Icon(
                 imageVector = Icons.Default.Security,
                 contentDescription = "Ícono de seguridad",
-                tint = Color(0xFF2563EB), // mismo azul del botón
+                tint = Color(0xFFA855F7), // morado medio
                 modifier = Modifier
                     .size(96.dp)
                     .padding(top = 16.dp)
@@ -102,9 +102,9 @@ fun RegisterScreen(navController: NavController, auth: FirebaseAuth) {
                 shape = RoundedCornerShape(12.dp),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 colors = TextFieldDefaults.colors(
-                    focusedIndicatorColor = Color(0xFF2563EB),
+                    focusedIndicatorColor = Color(0xFF9333EA),
                     unfocusedIndicatorColor = Color.Gray,
-                    focusedLabelColor = Color(0xFF2563EB),
+                    focusedLabelColor = Color(0xFF9333EA),
                     unfocusedLabelColor = Color.Gray
                 ),
                 modifier = Modifier
@@ -124,9 +124,9 @@ fun RegisterScreen(navController: NavController, auth: FirebaseAuth) {
                 singleLine = true,
                 visualTransformation = PasswordVisualTransformation(),
                 colors = TextFieldDefaults.colors(
-                    focusedIndicatorColor = Color(0xFF2563EB),
+                    focusedIndicatorColor = Color(0xFF9333EA),
                     unfocusedIndicatorColor = Color.Gray,
-                    focusedLabelColor = Color(0xFF2563EB),
+                    focusedLabelColor = Color(0xFF9333EA),
                     unfocusedLabelColor = Color.Gray
                 ),
                 modifier = Modifier
@@ -146,9 +146,9 @@ fun RegisterScreen(navController: NavController, auth: FirebaseAuth) {
                 singleLine = true,
                 visualTransformation = PasswordVisualTransformation(),
                 colors = TextFieldDefaults.colors(
-                    focusedIndicatorColor = Color(0xFF2563EB),
+                    focusedIndicatorColor = Color(0xFF9333EA),
                     unfocusedIndicatorColor = Color.Gray,
-                    focusedLabelColor = Color(0xFF2563EB),
+                    focusedLabelColor = Color(0xFF9333EA),
                     unfocusedLabelColor = Color.Gray
                 ),
                 modifier = Modifier
@@ -165,7 +165,7 @@ fun RegisterScreen(navController: NavController, auth: FirebaseAuth) {
                         navController.navigate("login")
                     })
                 },
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2563EB)), // azul uniforme
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF7C3AED)), // azul uniforme
                 shape = RoundedCornerShape(12.dp), // bordes redondeados
                 modifier = Modifier
                     .fillMaxWidth()
@@ -180,7 +180,7 @@ fun RegisterScreen(navController: NavController, auth: FirebaseAuth) {
 
 
             TextButton(onClick = { navController.popBackStack(); navController.navigate("login") }) {
-                Text("¿Ya tienes cuenta? Inicia sesión")
+                Text("¿Ya tienes cuenta? Inicia sesión",  color = Color(0xFFCBD5E1))
             }
         }
     }
